@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>통합과학1 수행평가 제출 폼</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PDF 변환을 위한 html2pdf.js 라이브러리 추가 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -29,7 +31,7 @@
                 </div>
                 <div class="hidden sm:block text-slate-400">|</div>
                 <div>
-                    <span class="font-bold text-white">✍️ 평가 방식 및 배점:</span> 각반에 배부된 유인물 참조
+                    <span class="font-bold text-white">✍️ 평가 방식:</span> 보고서 및 관련 시각 자료 검토
                 </div>
             </div>
         </div>
@@ -78,7 +80,7 @@
                                     생활 속, 혹은 다른 학문 속 운동량과 충격량의 개념 활용 사례 <span class="text-red-500">*</span>
                                 </label>
                                 <span class="block text-xs text-slate-400 mb-3">
-                                    💡 실제로 운동량과 충격량이라는 물리량을 활용하는 것 외에도, 인문사회 계열 등 다른 분야 학문에서 비유적으로 운동량과 충격량의 용어를 사용하는 것 또한 인정함.
+                                    💡 운동 장비(에어백, 헬멧), 자연 현상, 안전 장치, 예술, 군사 기술 등에서 한 가지 사례를 골라 명칭을 적어주세요.
                                 </span>
                                 <input type="text" id="q1" required placeholder="예: 자동차 에어백과 범퍼의 원리" 
                                        class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
@@ -93,7 +95,7 @@
                                     운동량과 충격량의 개념이 사례와 연관되는 점 <span class="text-red-500">*</span>
                                 </label>
                                 <span class="block text-xs text-slate-400 mb-3">
-                                    💡 운동량과 충격량의 개념이 사례와 연관되는 점을 과학적 용어를 활용하여 설명하기
+                                    💡 선택한 사례에서 운동량의 변화가 어떻게 일어나는지, 충돌 시간($\Delta t$)을 늘려 충격력($F$)을 줄이는 원리인지 등 과학적 개념과 공식을 활용해 논리적으로 설명하세요.
                                 </span>
                                 <textarea id="q2" required rows="4" placeholder="예: 에어백이 작동하면 충돌 시 운전자가 멈추는 데 걸리는 시간(t)이 길어집니다. 충량량(I = F·t)은 일정한데 시간이 증가하므로 운전자가 받는 평균 충격력(F)이 감소하여 부상을 예방하게 됩니다..." 
                                           class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm leading-relaxed"></textarea>
@@ -108,7 +110,7 @@
                                     개념의 유용성 및 응용·폭넓은 활용 방안 설명 <span class="text-red-500">*</span>
                                 </label>
                                 <span class="block text-xs text-slate-400 mb-3">
-                                    💡 본인이 선택한 사례에서 운동량과 충격량의 개념이 유용하게 사용되었다고 생각한 이유를 서술하거나, 이 사례를 응용하여 폭넓게 활용하는 방안에 대하여 설명하기
+                                    💡 이 개념이 왜 실생활에서 유용하게 사용된다고 생각하는지 적거나, 본인이 구상한 새로운 안전 장비 디자인이나 타 학문(체육, 공학 등)과의 융합적인 발전 방안을 자유롭게 제시해 주세요.
                                 </span>
                                 <textarea id="q3" required rows="5" placeholder="예: 이 개념은 인명 피해를 막는 모든 안전 공학의 뼈대가 되기 때문에 유용합니다. 저는 이를 응용하여 스마트폰 낙하 시 모서리에서 미세 에어백이 순간적으로 돌출되어 낙하 충돌 시간을 늘려주는 스마트 안전 케이스를 구상해 보았습니다..." 
                                           class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm leading-relaxed"></textarea>
@@ -123,7 +125,7 @@
                                     관련 시각 자료 첨부 <span class="text-red-500">*</span>
                                 </label>
                                 <span class="block text-xs text-slate-400 mb-3">
-                                    💡 이미지 파일을 업로드하거나, 관련 유튜브 설명 영상, 모의실험 시뮬레이션 등등 링크를 입력해 주세요. (이미지 파일 첨부 또는 링크 입력 중 최소 한 가지 필수)
+                                    💡 개념을 직관적으로 설명할 수 있는 이미지 파일을 업로드하거나, 관련 유튜브 설명 영상, 모의실험 시뮬레이션의 링크를 입력해 주세요. (이미지 파일 첨부 또는 링크 입력 중 최소 한 가지 필수)
                                 </span>
                                 
                                 <!-- 검증 경고 메시지 영역 (미입력 시 노출) -->
@@ -352,7 +354,10 @@
             const q4_link = document.getElementById('q4_link').value.trim() || '입력 없음';
             const q4_desc = document.getElementById('q4_desc').value.trim() || '설명 없음';
             const q5 = document.getElementById('q5').value;
-            const imagePreviewSrc = document.getElementById('image_preview').src;
+            
+            // 이미지 첨부 여부 명확한 물리적 검증 (공백 URL 렌더링 무한로딩 유발 버그 해결)
+            const hasImage = !!document.getElementById('q4_image').files[0];
+            const imagePreviewSrc = hasImage ? document.getElementById('image_preview').src : '';
 
             // PDF 인쇄용 깨끗한 임시 돔 엘리먼트 동적 생성 (기존 입력 폼 레이아웃 보존 목적)
             const printElement = document.createElement('div');
@@ -385,7 +390,7 @@
                 <div style="margin-bottom: 20px; page-break-inside: avoid;">
                     <h3 style="font-size: 15px; font-weight: bold; border-left: 4px solid #1e3a8a; padding-left: 8px; margin-bottom: 8px; color: #1e3a8a;">[4] 관련 시각 자료</h3>
                     <div style="border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; background-color: #ffffff;">
-                        ${imagePreviewSrc ? `
+                        ${hasImage && imagePreviewSrc ? `
                             <div style="text-align: center; margin-bottom: 12px;">
                                 <p style="font-size: 11px; color: #64748b; margin-bottom: 5px;">[첨부 이미지: ${uploadedFileName}]</p>
                                 <img src="${imagePreviewSrc}" style="max-width: 100%; max-height: 280px; border-radius: 6px; display: inline-block;" />
@@ -408,24 +413,21 @@
                 margin:       12,
                 filename:     `${grade}_${number}_${name}_수행평가.pdf`,
                 image:        { type: 'jpeg', quality: 0.95 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                html2canvas:  { scale: 1.5, useCORS: true, logging: false, allowTaint: true }, // scale을 적정수준 조절하여 렌더링 성능 극대화 및 지연 예방
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // PDF Blob 생성 시동
-            html2pdf().from(printElement).set(opt).toPdf().get('pdf').then(function (pdf) {
-                const pdfBlob = pdf.output('blob');
-                
-                // Blob을 Base64 문자열로 해싱
+            // html2pdf 공식 프로미스 빌드 패턴 사용 (무한 정지 버그 제거)
+            html2pdf().set(opt).from(printElement).output('blob').then(function (pdfBlob) {
                 const reader = new FileReader();
-                reader.readAsDataURL(pdfBlob);
                 reader.onloadend = function() {
                     const base64data = reader.result.split(',')[1]; // 헤더 제거 후 순수 base64 추출
                     sendToGoogleDriveAndSheet(submitTime, grade, number, name, base64data);
                 };
+                reader.readAsDataURL(pdfBlob);
             }).catch(err => {
                 console.error("PDF 생성 오류:", err);
-                alert("PDF 가상 본문 생성에 실패했습니다. 이전 백업 방식으로 안전하게 이메일 전송을 진행합니다.");
+                alert("PDF 가상 본문 생성에 실패했습니다. 안전하게 이메일 전송 백업 장치를 작동합니다.");
                 sendViaEmailBackup(submitTime);
                 document.getElementById('successModal').classList.add('hidden');
             });
@@ -457,22 +459,35 @@
             }
             const encodedData = formBody.join("&");
 
+            // 10초 타임아웃 세이프가드 추가 (네트워크가 먹통이 되거나 응답이 없을 때 자동 이메일 발송 우회)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); 
+
             fetch(GAS_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
                 },
                 mode: 'no-cors',
-                body: encodedData
+                body: encodedData,
+                signal: controller.signal
             })
             .then(response => {
+                clearTimeout(timeoutId);
                 // 성공 시 모달 상태를 성공 UI로 전환 (입력 내용은 모두 보존)
                 document.getElementById('submittingState').classList.add('hidden');
                 document.getElementById('successState').classList.remove('hidden');
             })
             .catch(error => {
+                clearTimeout(timeoutId);
                 console.error('Error:', error);
-                alert("클라우드 전송 중 일시적인 네트워크 지연이 발생했습니다. 안전 제출을 위해 이메일 전송을 대안 실행합니다.");
+                
+                if (error.name === 'AbortError') {
+                    alert("구글 연동 서버의 응답 지연(10초 초과) 또는 샌드박스 정책으로 전송이 중단되었습니다. 안전한 제출을 위해 이메일 자동 우회 제출을 시도합니다.");
+                } else {
+                    alert("클라우드 전송 중 일시적인 네트워크 장애가 발생했습니다. 안전 제출을 위해 이메일 백업 방식을 즉시 대안 작동합니다.");
+                }
+                
                 sendViaEmailBackup(submitTime);
                 document.getElementById('successModal').classList.add('hidden');
             });
