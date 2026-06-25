@@ -307,7 +307,7 @@
             uploadPrompt.classList.remove('hidden');
         }
 
-        // 과제 제출 시 모달 처리
+        // 과제 제출 시 모달 처리 및 PDF 추출 프로세스 트리거
         function handleSubmit() {
             // 4번 문항 검증: 이미지 또는 참고 링크 중 최소 하나가 작성되었는지 체크
             const imageInput = document.getElementById('q4_image');
@@ -329,7 +329,7 @@
 
             // 모달 데이터 세팅
             document.getElementById('modalStudentInfo').innerText = `${grade} ${number} ${name} 학생`;
-            document.getElementById('modalCaseName').innerText = caseName;
+            document.getElementById('modalPdfName').innerText = `${grade}_${number}_${name}_수행평가.pdf`;
             
             const now = new Date();
             const formattedTime = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
@@ -340,27 +340,115 @@
             document.getElementById('successState').classList.add('hidden');
             document.getElementById('successModal').classList.remove('hidden');
 
-            // 실제 구글 시트 전송 시작
-            sendToGoogleSheet(formattedTime);
+            // 실제 PDF 파일 생성 후 전송
+            generateAndSendPDF(formattedTime, grade, number, name);
         }
 
-        // 구글 스프레드시트에 데이터 전송하는 기능
-        function sendToGoogleSheet(submitTime) {
+        // html2pdf를 통해 제출한 내용을 정제된 보고서 양식의 PDF로 변환 및 전송
+        function generateAndSendPDF(submitTime, grade, number, name) {
+            const q1 = document.getElementById('q1').value;
+            const q2 = document.getElementById('q2').value;
+            const q3 = document.getElementById('q3').value;
+            const q4_link = document.getElementById('q4_link').value.trim() || '입력 없음';
+            const q4_desc = document.getElementById('q4_desc').value.trim() || '설명 없음';
+            const q5 = document.getElementById('q5').value;
+            const imagePreviewSrc = document.getElementById('image_preview').src;
+
+            // PDF 인쇄용 깨끗한 임시 돔 엘리먼트 동적 생성 (기존 입력 폼 레이아웃 보존 목적)
+            const printElement = document.createElement('div');
+            printElement.style.padding = '25px';
+            printElement.style.backgroundColor = '#ffffff';
+            printElement.style.fontFamily = 'sans-serif';
+            printElement.innerHTML = `
+                <div style="border-bottom: 3px double #1e3a8a; padding-bottom: 12px; margin-bottom: 25px; text-align: center;">
+                    <h1 style="font-size: 26px; font-weight: bold; color: #1e3a8a; margin: 0 0 5px 0;">통합과학1 수행평가 제출 보고서</h1>
+                    <p style="font-size: 14px; color: #4b5563; margin: 0;">영역: 세상 속 운동량과 충격량 활용 사례 탐구하기</p>
+                </div>
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 20px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; font-size: 14px;">
+                    <div><strong>소속 반:</strong> ${grade}</div>
+                    <div><strong>학번:</strong> ${number}</div>
+                    <div><strong>제출 학생:</strong> ${name}</div>
+                    <div><strong>제출 시간:</strong> ${submitTime}</div>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h3 style="font-size: 15px; font-weight: bold; border-left: 4px solid #1e3a8a; padding-left: 8px; margin-bottom: 8px; color: #1e3a8a;">[1] 개념 활용 사례</h3>
+                    <div style="font-size: 13px; line-height: 1.6; padding: 8px 12px; background-color: #fafafa; border-radius: 6px; white-space: pre-wrap;">${q1}</div>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h3 style="font-size: 15px; font-weight: bold; border-left: 4px solid #1e3a8a; padding-left: 8px; margin-bottom: 8px; color: #1e3a8a;">[2] 운동량과 충격량 개념과의 연관성</h3>
+                    <div style="font-size: 13px; line-height: 1.6; padding: 8px 12px; background-color: #fafafa; border-radius: 6px; white-space: pre-wrap;">${q2}</div>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h3 style="font-size: 15px; font-weight: bold; border-left: 4px solid #1e3a8a; padding-left: 8px; margin-bottom: 8px; color: #1e3a8a;">[3] 개념의 유용성 및 응용·폭넓은 활용 방안</h3>
+                    <div style="font-size: 13px; line-height: 1.6; padding: 8px 12px; background-color: #fafafa; border-radius: 6px; white-space: pre-wrap;">${q3}</div>
+                </div>
+                <div style="margin-bottom: 20px; page-break-inside: avoid;">
+                    <h3 style="font-size: 15px; font-weight: bold; border-left: 4px solid #1e3a8a; padding-left: 8px; margin-bottom: 8px; color: #1e3a8a;">[4] 관련 시각 자료</h3>
+                    <div style="border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; background-color: #ffffff;">
+                        ${imagePreviewSrc ? `
+                            <div style="text-align: center; margin-bottom: 12px;">
+                                <p style="font-size: 11px; color: #64748b; margin-bottom: 5px;">[첨부 이미지: ${uploadedFileName}]</p>
+                                <img src="${imagePreviewSrc}" style="max-width: 100%; max-height: 280px; border-radius: 6px; display: inline-block;" />
+                            </div>
+                        ` : ''}
+                        <p style="font-size: 12px; margin-bottom: 5px; word-break: break-all;"><strong>참고 링크:</strong> <a href="${q4_link}" style="color: #2563eb; text-decoration: underline;">${q4_link}</a></p>
+                        <p style="font-size: 12px; color: #334155; margin: 0;"><strong>시각자료 설명:</strong> ${q4_desc}</p>
+                    </div>
+                </div>
+                <div style="margin-bottom: 20px; page-break-inside: avoid;">
+                    <h3 style="font-size: 15px; font-weight: bold; border-left: 4px solid #1e3a8a; padding-left: 8px; margin-bottom: 8px; color: #1e3a8a;">[5] 참고 자료 및 출처</h3>
+                    <div style="font-size: 13px; line-height: 1.6; padding: 8px 12px; background-color: #fafafa; border-radius: 6px; white-space: pre-wrap;">${q5}</div>
+                </div>
+                <div style="margin-top: 40px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                    본 문서는 통합과학1 운동량과 충격량 활용 사례 탐구 수행평가로 자동 생성된 PDF 원본서류입니다.
+                </div>
+            `;
+
+            const opt = {
+                margin:       12,
+                filename:     `${grade}_${number}_${name}_수행평가.pdf`,
+                image:        { type: 'jpeg', quality: 0.95 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // PDF Blob 생성 시동
+            html2pdf().from(printElement).set(opt).toPdf().get('pdf').then(function (pdf) {
+                const pdfBlob = pdf.output('blob');
+                
+                // Blob을 Base64 문자열로 해싱
+                const reader = new FileReader();
+                reader.readAsDataURL(pdfBlob);
+                reader.onloadend = function() {
+                    const base64data = reader.result.split(',')[1]; // 헤더 제거 후 순수 base64 추출
+                    sendToGoogleDriveAndSheet(submitTime, grade, number, name, base64data);
+                };
+            }).catch(err => {
+                console.error("PDF 생성 오류:", err);
+                alert("PDF 가상 본문 생성에 실패했습니다. 이전 백업 방식으로 안전하게 이메일 전송을 진행합니다.");
+                sendViaEmailBackup(submitTime);
+                document.getElementById('successModal').classList.add('hidden');
+            });
+        }
+
+        // 구글 앱스 스크립트로 PDF 및 스프레드시트 기록 데이터 통합 전송
+        function sendToGoogleDriveAndSheet(submitTime, grade, number, name, pdfBase64) {
             const payload = {
                 timestamp: submitTime,
-                grade: document.getElementById('studentGrade').value,
-                number: document.getElementById('studentNumber').value,
-                name: document.getElementById('studentName').value,
+                grade: grade,
+                number: number,
+                name: name,
                 q1: document.getElementById('q1').value,
                 q2: document.getElementById('q2').value,
                 q3: document.getElementById('q3').value,
                 q4_image_name: uploadedFileName ? uploadedFileName : '첨부 이미지 없음',
                 q4_link: document.getElementById('q4_link').value.trim() || '입력 없음',
                 q4_desc: document.getElementById('q4_desc').value.trim() || '설명 없음',
-                q5: document.getElementById('q5').value
+                q5: document.getElementById('q5').value,
+                pdfData: pdfBase64 // Base64로 인코딩된 PDF 바이너리 전송
             };
 
-            // CORS 차단을 피하기 위해 no-cors 모드로 Form-urlencoded 전송 수행
+            // CORS 차단을 우회하기 위한 urlencoded 매핑 전송
             const formBody = [];
             for (const property in payload) {
                 const encodedKey = encodeURIComponent(property);
@@ -374,23 +462,23 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
                 },
-                mode: 'no-cors', // 타 도메인 크립트 전송 허용
+                mode: 'no-cors',
                 body: encodedData
             })
             .then(response => {
-                // 성공 시 모달 상태를 성공 UI로 전환 (화면 값 복원 코드 reset()은 호출 안 함)
+                // 성공 시 모달 상태를 성공 UI로 전환 (입력 내용은 모두 보존)
                 document.getElementById('submittingState').classList.add('hidden');
                 document.getElementById('successState').classList.remove('hidden');
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert("구글 시트 전송 중 일시적인 네트워크 장애가 발생했습니다. 이메일 전송 백업 방식을 작동합니다.");
+                alert("클라우드 전송 중 일시적인 네트워크 지연이 발생했습니다. 안전 제출을 위해 이메일 전송을 대안 실행합니다.");
                 sendViaEmailBackup(submitTime);
                 document.getElementById('successModal').classList.add('hidden');
             });
         }
 
-        // 구글 앱스 스크립트 연결 장애 시 대안으로 작동할 이메일 백업 발송 함수
+        // 시스템 장애를 대비한 이메일 안전 우회 발송 장치
         function sendViaEmailBackup(submitTime) {
             const grade = document.getElementById('studentGrade').value;
             const number = document.getElementById('studentNumber').value;
@@ -427,7 +515,7 @@
             window.location.href = mailtoUrl;
         }
 
-        // 성공 모달 닫기 (입력데이터 그대로 보존됨)
+        // 성공 모달 닫기 (입력데이터 보존)
         function closeModal() {
             document.getElementById('successModal').classList.add('hidden');
         }
