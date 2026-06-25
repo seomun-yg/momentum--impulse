@@ -210,7 +210,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
                     <span>
-                        제출 전 반드시 입력 내용을 확인하세요. 제출 버튼 클릭 시, 구글 스프레드시트에 실시간으로 기록이 안전하게 저장되며 작성 내용은 폼에 그대로 유지됩니다.
+                        제출 전 반드시 입력 내용을 확인하세요. 제출 버튼 클릭 시, 작성 내용이 자동으로 PDF로 저장되고 연동된 구글 드라이브 폴더에 업로드됩니다.
                     </span>
                 </div>
                 <div class="flex space-x-3 w-full sm:w-auto">
@@ -232,8 +232,8 @@
                 <!-- 로딩 중 상태 -->
                 <div id="submittingState" class="block py-4">
                     <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-1">구글 스프레드시트에 제출 중...</h3>
-                    <p class="text-sm text-slate-500">잠시만 기다려 주세요. 입력하신 데이터가 실시간으로 안전하게 전송되고 있습니다.</p>
+                    <h3 class="text-lg font-bold text-slate-900 mb-1">PDF 보고서 생성 및 업로드 중...</h3>
+                    <p class="text-sm text-slate-500">보고서 내용을 PDF로 디지털 변환 후 지정된 구글 드라이브 폴더에 안전하게 전송 및 누적하고 있습니다. 잠시만 기다려 주세요.</p>
                 </div>
 
                 <!-- 제출 성공 상태 -->
@@ -243,16 +243,16 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-1">과제 제출이 완료되었습니다!</h3>
+                    <h3 class="text-lg font-bold text-slate-900 mb-1">수행평가 제출 완료!</h3>
                     <p class="text-sm text-slate-500 mb-4" id="modalStudentInfo"></p>
                     
-                    <p class="text-xs text-emerald-700 font-semibold bg-emerald-50 p-2.5 rounded-lg mb-4 text-left border border-emerald-100 leading-relaxed">
-                        🎉 작성된 데이터가 구글 스프레드시트에 성공적으로 기록되었습니다. 작성하셨던 데이터는 수정 및 보관을 위해 화면에 그대로 보존됩니다.
+                    <p class="text-xs text-emerald-700 font-semibold bg-emerald-50 p-2.5 rounded-lg mb-4 text-left border border-emerald-100 leading-relaxed font-mono">
+                        🎉 보고서가 PDF 전자문서 형태로 변환되어 구글 드라이브 지정 폴더에 실시간 자동 업로드되었습니다. 데이터는 폼에 그대로 유지됩니다.
                     </p>
 
                     <div class="bg-slate-50 p-3 rounded-lg text-left text-xs text-slate-600 mb-6 space-y-1">
-                        <div class="font-bold border-b border-slate-200 pb-1 mb-1 text-slate-700">전송 완료 내역 요약</div>
-                        <div><strong>사례:</strong> <span id="modalCaseName"></span></div>
+                        <div class="font-bold border-b border-slate-200 pb-1 mb-1 text-slate-700">전송 및 저장 정보</div>
+                        <div><strong>문서명:</strong> <span id="modalPdfName" class="text-blue-600 font-medium"></span></div>
                         <div><strong>제출 시간:</strong> <span id="modalSubmitTime"></span></div>
                     </div>
 
